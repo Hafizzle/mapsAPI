@@ -62,12 +62,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions().position(latLng)
+                .title("I Am Here.");
+        //Adds Marker
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+        //Pans Camera to current location
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(DEFAULT_ZOOM);
-
         mMap.animateCamera(zoom);
 
     }
@@ -95,5 +97,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case REQUEST_CODE:
+                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    fetchLastLocation();
+                }
+                break;
+        }
+    }
 }
